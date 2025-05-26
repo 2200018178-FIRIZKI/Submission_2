@@ -1,25 +1,31 @@
-const STORAGE_KEY = 'BOOKMARKED_STORIES';
+import { openDB } from 'idb';
+
+const DB_NAME = 'ruangkisah-db';
+const STORE_NAME = 'bookmarks';
+
+const dbPromise = openDB(DB_NAME, 1, {
+  upgrade(db) {
+    if (!db.objectStoreNames.contains(STORE_NAME)) {
+      db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+    }
+  },
+});
 
 const BookmarkStorage = {
-  getAllBookmarks() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  async getAllBookmarks() {
+    return (await dbPromise).getAll(STORE_NAME);
   },
 
-  saveBookmark(story) {
-    const bookmarks = this.getAllBookmarks();
-    bookmarks.push(story);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks));
+  async saveBookmark(story) {
+    return (await dbPromise).put(STORE_NAME, story);
   },
 
-  removeBookmark(storyId) {
-    const bookmarks = this.getAllBookmarks();
-    const filteredBookmarks = bookmarks.filter((story) => story.id !== storyId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredBookmarks));
+  async removeBookmark(storyId) {
+    return (await dbPromise).delete(STORE_NAME, storyId);
   },
 
-  isBookmarked(storyId) {
-    const bookmarks = this.getAllBookmarks();
-    return bookmarks.some((story) => story.id === storyId);
+  async isBookmarked(storyId) {
+    return !!(await (await dbPromise).get(STORE_NAME, storyId));
   },
 };
 

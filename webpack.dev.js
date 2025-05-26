@@ -15,8 +15,9 @@ module.exports = merge(common, {
   devServer: {
     static: path.resolve(__dirname, 'dist'),
     open: false,
-    port: 9001,
+    port: 8080,
     client: {
+      webSocketURL: 'ws://localhost:8080/ws',
       overlay: {
         errors: true,
         warnings: true,
