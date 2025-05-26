@@ -7,7 +7,7 @@ import {
 // import { setupSkipToContent, transitionHelper } from '../utils'; // transitionHelper tidak dipakai di versi ini
 import { setupSkipToContent } from '../utils'; // Hanya setupSkipToContent yang dipakai dari utils standar
 import { getAccessToken, getLogout } from '../utils/auth'; // Pastikan path ini benar
-import { routes } from '../routes/routes'; // Pastikan path ini benar
+import routes from '../routes/routes.js'; // Pastikan path ini benar
 
 export default class App {
   #content;
@@ -108,7 +108,7 @@ export default class App {
 
   async renderPage() {
     const url = getActiveRoute();
-    const routeHandlerFunction = url ? routes[url] : undefined;
+    const routeHandlerFunction = url ? routes[url] : routes['/not-found'];
 
     console.log(`App.renderPage: Attempting to render URL: "${url}"`); // Log dasar untuk URL
 
